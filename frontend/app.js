@@ -413,8 +413,6 @@ function pageMenu() {
     cartItems.innerHTML = '';
 
     if (!entries.length) {
-      cartItems.textContent = 'Cart is empty.';
-      cartTotal.textContent = '₹0';
       if (cartSection) {
         cartSection.style.display = 'none';
       }
@@ -426,19 +424,28 @@ function pageMenu() {
     }
 
     let total = 0;
+    let totalItems = 0;
     entries.forEach(([itemId, quantity]) => {
       const item = menuItems.find((m) => m.id === itemId);
       if (!item) {
         return;
       }
 
-      const line = document.createElement('div');
       const lineTotal = item.price * quantity;
       total += lineTotal;
-      line.textContent = `${item.name} x ${quantity} = ${money(lineTotal)}`;
-      cartItems.appendChild(line);
+      totalItems += quantity;
     });
 
+    // Display simplified cart info with total
+    const itemText = totalItems === 1 ? '1 Item added' : `${totalItems} Items added`;
+    cartItems.innerHTML = `
+      <div class="cart-top-row">
+        <span class="cart-item-count">${itemText}</span>
+        <span class="cart-order-now-text">ORDER NOW</span>
+      </div>
+      <div class="cart-divider"></div>
+      <div class="cart-total-row">Total: ${money(total)}</div>
+    `;
     cartTotal.textContent = money(total);
   }
 
@@ -491,6 +498,15 @@ function pageMenu() {
       placeButton.disabled = false;
     }
   });
+
+  // Make entire cart section clickable
+  const cartSection = document.getElementById('cart-section');
+  if (cartSection) {
+    cartSection.style.cursor = 'pointer';
+    cartSection.addEventListener('click', () => {
+      placeButton.click();
+    });
+  }
 
   renderMenu();
   renderCart();
