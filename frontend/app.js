@@ -236,7 +236,7 @@ function setState(next) {
 }
 
 function money(value) {
-  return `INR ${value}`;
+  return `₹${value}`;
 }
 
 function requireSession() {
