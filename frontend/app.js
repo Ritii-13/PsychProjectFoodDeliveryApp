@@ -104,6 +104,110 @@ const RESTAURANTS = {
       { id: 'pg15', name: 'Ras Malai', price: 99, image: 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=200&h=200&fit=crop' },
       { id: 'pg16', name: 'Masala Chai', price: 39, image: 'https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=200&h=200&fit=crop' }
     ]
+  },
+  'magnolia-bakery': {
+    name: 'Magnolia Bakery',
+    cuisine: 'Bakery & Desserts',
+    image: 'https://images.unsplash.com/photo-1517433670267-08bbd4be890f?w=400&h=300&fit=crop',
+    rating: '4.5',
+    time: '25-30 mins',
+    offer: 'ITEMS\nAT ₹79',
+    items: [
+      { id: 'mb1', name: 'Red Velvet Cupcake', price: 149, image: 'https://images.unsplash.com/photo-1614707267537-b85aaf00c4b7?w=200&h=200&fit=crop' },
+      { id: 'mb2', name: 'Chocolate Chip Cookies', price: 99, image: 'https://images.unsplash.com/photo-1499636136210-6f4ee915583e?w=200&h=200&fit=crop' },
+      { id: 'mb3', name: 'Banana Pudding', price: 179, image: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=200&h=200&fit=crop' },
+      { id: 'mb4', name: 'Vanilla Cupcake', price: 129, image: 'https://images.unsplash.com/photo-1587668178277-295251f900ce?w=200&h=200&fit=crop' },
+      { id: 'mb5', name: 'Blueberry Muffin', price: 119, image: 'https://images.unsplash.com/photo-1607958996333-41aef7caefaa?w=200&h=200&fit=crop' },
+      { id: 'mb6', name: 'Carrot Cake', price: 189, image: 'https://images.unsplash.com/photo-1621303837174-89787a7d4729?w=200&h=200&fit=crop' },
+      { id: 'mb7', name: 'Cheesecake Slice', price: 199, image: 'https://images.unsplash.com/photo-1533134486753-c833f0ed4866?w=200&h=200&fit=crop' },
+      { id: 'mb8', name: 'Chocolate Brownie', price: 139, image: 'https://images.unsplash.com/photo-1607920591413-4ec007e70023?w=200&h=200&fit=crop' },
+      { id: 'mb9', name: 'Cinnamon Roll', price: 159, image: 'https://images.unsplash.com/photo-1626094309830-abbb0c99da4a?w=200&h=200&fit=crop' },
+      { id: 'mb10', name: 'Lemon Tart', price: 169, image: 'https://images.unsplash.com/photo-1519915028121-7d3463d20b13?w=200&h=200&fit=crop' },
+      { id: 'mb11', name: 'Croissant', price: 89, image: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=200&h=200&fit=crop' },
+      { id: 'mb12', name: 'Apple Pie', price: 179, image: 'https://images.unsplash.com/photo-1535920527002-b35e96722eb9?w=200&h=200&fit=crop' },
+      { id: 'mb13', name: 'Macarons (6 pcs)', price: 249, image: 'https://images.unsplash.com/photo-1569864358642-9d1684040f43?w=200&h=200&fit=crop' },
+      { id: 'mb14', name: 'Chocolate Eclair', price: 129, image: 'https://images.unsplash.com/photo-1612201142855-c7a9b5a4e93d?w=200&h=200&fit=crop' },
+      { id: 'mb15', name: 'Iced Coffee', price: 119, image: 'https://images.unsplash.com/photo-1517487881594-2787fef5ebf7?w=200&h=200&fit=crop' },
+      { id: 'mb16', name: 'Hot Chocolate', price: 109, image: 'https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?w=200&h=200&fit=crop' }
+    ]
+  },
+  'chowman': {
+    name: 'Chowman',
+    cuisine: 'Chinese',
+    image: 'https://images.unsplash.com/photo-1525755662778-989d0524087e?w=400&h=300&fit=crop',
+    rating: '4.1',
+    time: '35-40 mins',
+    offer: 'ITEMS\nAT ₹149',
+    items: [
+      { id: 'cm1', name: 'Hakka Noodles', price: 189, image: 'https://images.unsplash.com/photo-1612874742237-6526221588e3?w=200&h=200&fit=crop' },
+      { id: 'cm2', name: 'Chicken Manchurian', price: 249, image: 'https://images.unsplash.com/photo-1626804475297-41608ea09aeb?w=200&h=200&fit=crop' },
+      { id: 'cm3', name: 'Veg Spring Rolls', price: 149, image: 'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=200&h=200&fit=crop' },
+      { id: 'cm4', name: 'Fried Rice', price: 179, image: 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=200&h=200&fit=crop' },
+      { id: 'cm5', name: 'Chilli Chicken', price: 269, image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=200&h=200&fit=crop' },
+      { id: 'cm6', name: 'Paneer Chilli', price: 239, image: 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=200&h=200&fit=crop' },
+      { id: 'cm7', name: 'Schezwan Noodles', price: 199, image: 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=200&h=200&fit=crop' },
+      { id: 'cm8', name: 'Chicken Fried Rice', price: 219, image: 'https://images.unsplash.com/photo-1516684732162-798a0062be99?w=200&h=200&fit=crop' },
+      { id: 'cm9', name: 'Veg Manchurian', price: 199, image: 'https://images.unsplash.com/photo-1626804475297-41608ea09aeb?w=200&h=200&fit=crop' },
+      { id: 'cm10', name: 'Chicken Momos', price: 159, image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=200&h=200&fit=crop' },
+      { id: 'cm11', name: 'Veg Momos', price: 139, image: 'https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=200&h=200&fit=crop' },
+      { id: 'cm12', name: 'Hot & Sour Soup', price: 119, image: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=200&h=200&fit=crop' },
+      { id: 'cm13', name: 'Sweet Corn Soup', price: 109, image: 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=200&h=200&fit=crop' },
+      { id: 'cm14', name: 'Honey Chilli Potato', price: 179, image: 'https://images.unsplash.com/photo-1639024471283-03518883512d?w=200&h=200&fit=crop' },
+      { id: 'cm15', name: 'Chilli Garlic Noodles', price: 209, image: 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=200&h=200&fit=crop' },
+      { id: 'cm16', name: 'Date Pancake', price: 129, image: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=200&h=200&fit=crop' }
+    ]
+  },
+  'lavonne-icecream': {
+    name: 'Lavonne Ice-cream',
+    cuisine: 'Ice Cream & Desserts',
+    image: 'https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=400&h=300&fit=crop',
+    rating: '4.6',
+    time: '20-25 mins',
+    offer: 'ITEMS\nAT ₹99',
+    items: [
+      { id: 'li1', name: 'Vanilla Bean Ice Cream', price: 149, image: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=200&h=200&fit=crop' },
+      { id: 'li2', name: 'Chocolate Fudge', price: 159, image: 'https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=200&h=200&fit=crop' },
+      { id: 'li3', name: 'Strawberry Delight', price: 149, image: 'https://images.unsplash.com/photo-1501443762994-82bd5dace89a?w=200&h=200&fit=crop' },
+      { id: 'li4', name: 'Mango Sorbet', price: 169, image: 'https://images.unsplash.com/photo-1570197788417-0e82375c9371?w=200&h=200&fit=crop' },
+      { id: 'li5', name: 'Pistachio Ice Cream', price: 179, image: 'https://images.unsplash.com/photo-1501443762994-82bd5dace89a?w=200&h=200&fit=crop' },
+      { id: 'li6', name: 'Salted Caramel', price: 189, image: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=200&h=200&fit=crop' },
+      { id: 'li7', name: 'Cookie Dough', price: 199, image: 'https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=200&h=200&fit=crop' },
+      { id: 'li8', name: 'Mint Chocolate Chip', price: 169, image: 'https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=200&h=200&fit=crop' },
+      { id: 'li9', name: 'Belgian Chocolate', price: 209, image: 'https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=200&h=200&fit=crop' },
+      { id: 'li10', name: 'Butterscotch', price: 149, image: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=200&h=200&fit=crop' },
+      { id: 'li11', name: 'Coffee Ice Cream', price: 159, image: 'https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=200&h=200&fit=crop' },
+      { id: 'li12', name: 'Blueberry Cheesecake', price: 219, image: 'https://images.unsplash.com/photo-1501443762994-82bd5dace89a?w=200&h=200&fit=crop' },
+      { id: 'li13', name: 'Hazelnut Praline', price: 199, image: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=200&h=200&fit=crop' },
+      { id: 'li14', name: 'Raspberry Ripple', price: 179, image: 'https://images.unsplash.com/photo-1501443762994-82bd5dace89a?w=200&h=200&fit=crop' },
+      { id: 'li15', name: 'Ice Cream Sundae', price: 229, image: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=200&h=200&fit=crop' },
+      { id: 'li16', name: 'Affogato', price: 189, image: 'https://images.unsplash.com/photo-1517487881594-2787fef5ebf7?w=200&h=200&fit=crop' }
+    ]
+  },
+  'koris-ramen': {
+    name: "Kori's Ramen",
+    cuisine: 'Japanese Ramen',
+    image: 'https://images.unsplash.com/photo-1557872943-16a5ac26437e?w=400&h=300&fit=crop',
+    rating: '4.4',
+    time: '30-35 mins',
+    offer: 'ITEMS\nAT ₹199',
+    items: [
+      { id: 'kr1', name: 'Tonkotsu Ramen', price: 329, image: 'https://images.unsplash.com/photo-1557872943-16a5ac26437e?w=200&h=200&fit=crop' },
+      { id: 'kr2', name: 'Miso Ramen', price: 299, image: 'https://images.unsplash.com/photo-1591814468924-caf88d1232e1?w=200&h=200&fit=crop' },
+      { id: 'kr3', name: 'Shoyu Ramen', price: 289, image: 'https://images.unsplash.com/photo-1623341214825-9f4f963727da?w=200&h=200&fit=crop' },
+      { id: 'kr4', name: 'Spicy Tan Tan Ramen', price: 339, image: 'https://images.unsplash.com/photo-1617093727343-374698b1b08d?w=200&h=200&fit=crop' },
+      { id: 'kr5', name: 'Vegetable Ramen', price: 269, image: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=200&h=200&fit=crop' },
+      { id: 'kr6', name: 'Chicken Ramen', price: 309, image: 'https://images.unsplash.com/photo-1617093727343-374698b1b08d?w=200&h=200&fit=crop' },
+      { id: 'kr7', name: 'Gyoza (6 pcs)', price: 179, image: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=200&h=200&fit=crop' },
+      { id: 'kr8', name: 'Edamame', price: 129, image: 'https://images.unsplash.com/photo-1583797227936-e6d2f2c6d7a7?w=200&h=200&fit=crop' },
+      { id: 'kr9', name: 'Chicken Karaage', price: 219, image: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=200&h=200&fit=crop' },
+      { id: 'kr10', name: 'Takoyaki (6 pcs)', price: 199, image: 'https://images.unsplash.com/photo-1583797227936-e6d2f2c6d7a7?w=200&h=200&fit=crop' },
+      { id: 'kr11', name: 'Tempura Udon', price: 279, image: 'https://images.unsplash.com/photo-1618841557871-b4664fbf0cb3?w=200&h=200&fit=crop' },
+      { id: 'kr12', name: 'Yakisoba', price: 249, image: 'https://images.unsplash.com/photo-1612874742237-6526221588e3?w=200&h=200&fit=crop' },
+      { id: 'kr13', name: 'Mochi Ice Cream', price: 149, image: 'https://images.unsplash.com/photo-1582716401301-b2407dc7563d?w=200&h=200&fit=crop' },
+      { id: 'kr14', name: 'Green Tea Cheesecake', price: 169, image: 'https://images.unsplash.com/photo-1533134486753-c833f0ed4866?w=200&h=200&fit=crop' },
+      { id: 'kr15', name: 'Japanese Iced Tea', price: 89, image: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=200&h=200&fit=crop' },
+      { id: 'kr16', name: 'Ramune Soda', price: 79, image: 'https://images.unsplash.com/photo-1629203851122-3726ecdf080e?w=200&h=200&fit=crop' }
+    ]
   }
 };
 
