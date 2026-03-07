@@ -11,20 +11,15 @@
       <section class="card delivery-page">
         <!-- Header with back button -->
         <div class="delivery-header">
-          <button class="back-btn" onclick="history.back()">←</button>
           <div class="delivery-header-info">
             <h1 id="restaurant-name-delivery">Restaurant Name</h1>
             <p id="tracking-meta"></p>
           </div>
-          <button class="menu-dots-btn">⋮</button>
         </div>
 
         <!-- Decorative background illustration -->
         <div class="delivery-illustration">
-          <div class="delivery-scene">
-            <div class="table-illustration"></div>
-            <div class="food-items"></div>
-          </div>
+          <!-- Fine dining background image -->
         </div>
 
         <!-- Status Card -->
@@ -38,15 +33,6 @@
           <p class="status-message" id="latest-message">Delivery partner is at the restaurant, and is about to pick your order</p>
           
           <div class="delivery-time-badge" id="current-eta">16</div>
-          
-          <button class="map-btn">
-            <span class="map-icon">🗺️</span>
-            <span>MAP</span>
-          </button>
-          
-          <button class="delivery-instructions-btn">
-            Add Delivery Instructions →
-          </button>
         </div>
 
         <!-- Timeline (hidden by default, can be shown) -->
@@ -55,15 +41,9 @@
           <ul id="timeline" class="timeline"></ul>
         </div>
 
-        <!-- Ad Banner Placeholder -->
-        <div class="ad-banner">
-          <div class="ad-content">
-            <span class="ad-icon">🎁</span>
-            <span>Special offers available - Check now!</span>
-          </div>
-        </div>
-
-        <button id="to-rating" class="hidden proceed-rating-btn">Proceed to Rating</button>
+        <button id="to-rating" class="hidden proceed-rating-btn">
+          <span class="proceed-rating-text">Proceed to Rating</span>
+        </button>
       </section>
     </main>
 

@@ -533,6 +533,37 @@ function pageDelivery() {
     return;
   }
 
+  // HD Food Images Collection
+  const foodImages = [
+    'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&h=500&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&h=500&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800&h=500&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=800&h=500&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800&h=500&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&h=500&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&h=500&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800&h=500&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&h=500&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1529042410759-befb1204b468?w=800&h=500&fit=crop&q=80'
+  ];
+
+  // Rotate background image randomly every 10 seconds
+  const deliveryIllustration = document.querySelector('.delivery-illustration');
+  if (deliveryIllustration) {
+    let currentImageIndex = Math.floor(Math.random() * foodImages.length);
+    deliveryIllustration.style.backgroundImage = `url('${foodImages[currentImageIndex]}')`;
+    
+    setInterval(() => {
+      let newIndex;
+      do {
+        newIndex = Math.floor(Math.random() * foodImages.length);
+      } while (newIndex === currentImageIndex);
+      
+      currentImageIndex = newIndex;
+      deliveryIllustration.style.backgroundImage = `url('${foodImages[currentImageIndex]}')`;
+    }, 10000);
+  }
+
   const timeline = document.getElementById('timeline');
   const eta = document.getElementById('current-eta');
   const latest = document.getElementById('latest-message');
@@ -549,7 +580,7 @@ function pageDelivery() {
     }
   }
 
-  meta.textContent = `Order #${state.participantId.substring(0, 6).toUpperCase()}`;
+  meta.textContent = `Participant: ${state.participantId} | Experiment: ${state.experimentId}`;
 
   function appendTimeline(text, emittedAt) {
     const li = document.createElement('li');
@@ -614,7 +645,7 @@ function pageDelivery() {
     }
 
     latest.textContent = event.message;
-    eta.textContent = `${event.etaMin} min`;
+    eta.textContent = event.etaMin;
     addMilestoneIfNeeded(event.phase, event.emittedAt);
   });
 
