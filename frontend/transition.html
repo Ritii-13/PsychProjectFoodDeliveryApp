@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Delivery Study | Loading</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'ProximaNova', 'Segoe UI', Tahoma, sans-serif;
+        background: #f0f0f5;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 100vh;
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+      }
+
+      .transition-container {
+        max-width: 414px;
+        width: 100%;
+        min-height: 100vh;
+        background: #fc8019;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        color: white;
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .transition-title {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        animation: fadeIn 0.5s ease-in;
+      }
+
+      .transition-subtitle {
+        font-size: 18px;
+        font-weight: 400;
+        opacity: 0.9;
+        margin-bottom: 60px;
+        animation: fadeIn 0.5s ease-in 0.2s backwards;
+      }
+
+      .icon-container {
+        margin: 60px 0;
+        animation: growIcon 2s ease-in-out;
+      }
+
+      .food-cloche {
+        width: 180px;
+        height: 180px;
+        margin: 0 auto;
+        position: relative;
+      }
+
+      .cloche-dome {
+        width: 160px;
+        height: 120px;
+        border: 12px solid white;
+        border-bottom: none;
+        border-radius: 80px 80px 0 0;
+        position: absolute;
+        bottom: 40px;
+        left: 10px;
+        animation: pulse 2s ease-in-out infinite;
+      }
+
+      .cloche-handle {
+        width: 30px;
+        height: 30px;
+        background: white;
+        border-radius: 50%;
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      .cloche-shine {
+        width: 60px;
+        height: 40px;
+        border: 8px solid rgba(255, 255, 255, 0.4);
+        border-radius: 30px 30px 0 0;
+        border-bottom: none;
+        position: absolute;
+        bottom: 60px;
+        left: 40px;
+        animation: shine 2s ease-in-out infinite;
+      }
+
+      .cloche-base {
+        width: 180px;
+        height: 12px;
+        background: white;
+        border-radius: 6px;
+        position: absolute;
+        bottom: 20px;
+        left: 0;
+      }
+
+      .cloche-plate {
+        width: 200px;
+        height: 8px;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 4px;
+        position: absolute;
+        bottom: 0;
+        left: -10px;
+      }
+
+      .participant-info {
+        font-size: 20px;
+        font-weight: 600;
+        margin-top: 60px;
+        animation: fadeIn 0.5s ease-in 0.4s backwards;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes growIcon {
+        0% {
+          transform: scale(0.5);
+          opacity: 0;
+        }
+        50% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      @keyframes pulse {
+        0%, 100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+      }
+
+      @keyframes shine {
+        0%, 100% {
+          opacity: 0.4;
+        }
+        50% {
+          opacity: 0.8;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="transition-container">
+      <h1 class="transition-title">You are</h1>
+      <p class="transition-subtitle">ordering food from IIIT Delhi</p>
+
+      <div class="icon-container">
+        <div class="food-cloche">
+          <div class="cloche-handle"></div>
+          <div class="cloche-dome">
+            <div class="cloche-shine"></div>
+          </div>
+          <div class="cloche-base"></div>
+          <div class="cloche-plate"></div>
+        </div>
+      </div>
+
+      <p class="participant-info" id="participant-info">Loading...</p>
+    </div>
+
+    <script>
+      // Get session data from localStorage
+      const STORAGE_KEY = 'delivery-study-state';
+      const state = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      
+      // Display participant info
+      const participantInfo = document.getElementById('participant-info');
+      if (state.participantId && state.experimentId) {
+        participantInfo.textContent = `Participant ${state.participantId} Experiment ${state.experimentId}`;
+      }
+
+      // Redirect after 2 seconds
+      setTimeout(() => {
+        window.location.href = 'restaurants.html';
+      }, 2000);
+    </script>
+  </body>
+</html>

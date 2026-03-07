@@ -1,0 +1,35 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Delivery Study | Home</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body data-page="home">
+    <main class="container">
+      <section class="card">
+        <div class="page-header">
+          <h1>Delivery Experience Study</h1>
+          <p>Start a participant session</p>
+        </div>
+
+        <form id="session-form" class="form-grid">
+          <label>
+            Participant ID
+            <input id="participant-id" required placeholder="e.g., P-001" />
+          </label>
+
+          <label>
+            Experiment ID
+            <input id="experiment-id" required placeholder="e.g., EXP-001" />
+          </label>
+
+          <button type="submit">Continue</button>
+        </form>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

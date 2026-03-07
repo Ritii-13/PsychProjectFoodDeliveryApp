@@ -1,0 +1,34 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Delivery Study | Menu</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body data-page="menu">
+    <main class="container">
+      <section class="card">
+        <div class="page-header">
+          <h1 id="restaurant-name">Menu</h1>
+          <p id="session-meta"></p>
+        </div>
+        
+        <div id="menu-list" class="menu-list"></div>
+
+        <div class="cart" id="cart-section">
+          <h2>Your Cart</h2>
+          <div id="cart-items"></div>
+          <p><strong>Total:</strong> <span id="cart-total">₹0</span></p>
+          <button id="place-order">Place Order</button>
+        </div>
+
+        <button class="floating-menu-btn" onclick="document.getElementById('cart-section').scrollIntoView({behavior: 'smooth'})">
+          Menu
+        </button>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

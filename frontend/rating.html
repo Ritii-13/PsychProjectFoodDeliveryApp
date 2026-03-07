@@ -1,0 +1,66 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Delivery Study | Rating</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body data-page="rating">
+    <main class="container">
+      <section class="card">
+        <h1>Post-Delivery Survey</h1>
+        <p id="rating-meta"></p>
+
+        <form id="rating-form" class="form-grid">
+          <label>
+            Overall experience (1-5)
+            <input type="number" id="rating-overall" min="1" max="5" required />
+          </label>
+
+          <!-- <label>
+            Trust in updates (1-5)
+            <input type="number" id="rating-trust" min="1" max="5" />
+          </label> -->
+
+          <!-- <label>
+            Perceived fairness (1-5)
+            <input type="number" id="rating-fairness" min="1" max="5" />
+          </label> -->
+
+          <label>
+            Comments
+            <textarea id="rating-comments" rows="4" placeholder="Optional"></textarea>
+          </label>
+
+          <button type="submit">Submit Rating</button>
+        </form>
+
+        <p id="rating-result"></p>
+
+        <button id="back-home-icon" class="icon-button hidden" type="button" aria-label="Back to Home">
+          <svg
+            class="icon-home"
+            viewBox="0 0 24 24"
+            width="18"
+            height="18"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <path
+              d="M3 11.5L12 4L21 11.5M6 10V20H18V10"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          <span>Back to Home</span>
+        </button>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

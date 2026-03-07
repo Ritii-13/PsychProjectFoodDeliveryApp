@@ -1,0 +1,73 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Delivery Study | Tracking</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body data-page="delivery">
+    <main class="container">
+      <section class="card delivery-page">
+        <!-- Header with back button -->
+        <div class="delivery-header">
+          <button class="back-btn" onclick="history.back()">←</button>
+          <div class="delivery-header-info">
+            <h1 id="restaurant-name-delivery">Restaurant Name</h1>
+            <p id="tracking-meta"></p>
+          </div>
+          <button class="menu-dots-btn">⋮</button>
+        </div>
+
+        <!-- Decorative background illustration -->
+        <div class="delivery-illustration">
+          <div class="delivery-scene">
+            <div class="table-illustration"></div>
+            <div class="food-items"></div>
+          </div>
+        </div>
+
+        <!-- Status Card -->
+        <div class="delivery-status-card">
+          <div class="status-badge">
+            <span class="status-icon">✓</span>
+            <span class="status-text">ON TIME</span>
+          </div>
+          
+          <h2 class="status-title">Picking your order now</h2>
+          <p class="status-message" id="latest-message">Delivery partner is at the restaurant, and is about to pick your order</p>
+          
+          <div class="delivery-time-badge" id="current-eta">16</div>
+          
+          <button class="map-btn">
+            <span class="map-icon">🗺️</span>
+            <span>MAP</span>
+          </button>
+          
+          <button class="delivery-instructions-btn">
+            Add Delivery Instructions →
+          </button>
+        </div>
+
+        <!-- Timeline (hidden by default, can be shown) -->
+        <div class="timeline-section hidden">
+          <h3>Order Timeline</h3>
+          <ul id="timeline" class="timeline"></ul>
+        </div>
+
+        <!-- Ad Banner Placeholder -->
+        <div class="ad-banner">
+          <div class="ad-content">
+            <span class="ad-icon">🎁</span>
+            <span>Special offers available - Check now!</span>
+          </div>
+        </div>
+
+        <button id="to-rating" class="hidden proceed-rating-btn">Proceed to Rating</button>
+      </section>
+    </main>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

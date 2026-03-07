@@ -1,0 +1,27 @@
+﻿{
+  "name": "psych-experiment-delivery-study",
+  "version": "0.1.0",
+  "description": "Web-based Swiggy/Zomato-style research prototype",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "nodemon backend/server.js"
+  },
+  "keywords": [
+    "psychology",
+    "experiment",
+    "delivery",
+    "socket.io",
+    "sqlite"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.2",
+    "socket.io": "^4.8.1",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
