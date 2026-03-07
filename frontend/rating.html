@@ -8,54 +8,50 @@
   </head>
   <body data-page="rating">
     <main class="container">
-      <section class="card">
-        <h1>Post-Delivery Survey</h1>
-        <p id="rating-meta"></p>
+      <section class="card rating-page">
+        <div class="rating-header">
+          <div class="rating-icon">⭐</div>
+          <h1 class="rating-title">Post-Delivery Survey</h1>
+          <p id="rating-meta" class="rating-subtitle"></p>
+        </div>
 
-        <form id="rating-form" class="form-grid">
-          <label>
-            Overall experience (1-5)
-            <input type="number" id="rating-overall" min="1" max="5" required />
-          </label>
+        <form id="rating-form" class="rating-form">
+          <div class="rating-input-group">
+            <label for="rating-overall" class="rating-label">
+              Overall experience (1-5)
+            </label>
+            <input 
+              type="number" 
+              id="rating-overall" 
+              class="rating-input"
+              min="1" 
+              max="5" 
+              required 
+              placeholder="Rate from 1 to 5"
+            />
+          </div>
 
-          <!-- <label>
-            Trust in updates (1-5)
-            <input type="number" id="rating-trust" min="1" max="5" />
-          </label> -->
+          <div class="rating-input-group">
+            <label for="rating-comments" class="rating-label">
+              Comments
+            </label>
+            <textarea 
+              id="rating-comments" 
+              class="rating-textarea"
+              rows="4" 
+              placeholder="Share your feedback (optional)"
+            ></textarea>
+          </div>
 
-          <!-- <label>
-            Perceived fairness (1-5)
-            <input type="number" id="rating-fairness" min="1" max="5" />
-          </label> -->
-
-          <label>
-            Comments
-            <textarea id="rating-comments" rows="4" placeholder="Optional"></textarea>
-          </label>
-
-          <button type="submit">Submit Rating</button>
+          <button type="submit" class="rating-button">
+            <span>Submit Rating</span>
+          </button>
         </form>
 
-        <p id="rating-result"></p>
+        <p id="rating-result" class="rating-result"></p>
 
-        <button id="back-home-icon" class="icon-button hidden" type="button" aria-label="Back to Home">
-          <svg
-            class="icon-home"
-            viewBox="0 0 24 24"
-            width="18"
-            height="18"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-          >
-            <path
-              d="M3 11.5L12 4L21 11.5M6 10V20H18V10"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
+        <button id="back-home-icon" class="rating-home-button hidden" type="button">
+          <span class="rating-home-icon">🏠</span>
           <span>Back to Home</span>
         </button>
       </section>
