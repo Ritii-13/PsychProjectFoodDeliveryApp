@@ -619,6 +619,10 @@ function pageDelivery() {
         // Update ETA display - just show the number
         if (event.eta_min != null) {
           eta.textContent = event.eta_min;
+          // Show proceed button only when timer hits 0
+          if (event.eta_min === 0) {
+            toRating.classList.remove('hidden');
+          }
         }
       });
 
@@ -646,6 +650,12 @@ function pageDelivery() {
 
     latest.textContent = event.message;
     eta.textContent = event.etaMin;
+    
+    // Show proceed button only when timer hits 0
+    if (event.etaMin === 0) {
+      toRating.classList.remove('hidden');
+    }
+    
     addMilestoneIfNeeded(event.phase, event.emittedAt);
   });
 

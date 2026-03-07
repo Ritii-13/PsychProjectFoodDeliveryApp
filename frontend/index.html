@@ -8,24 +8,38 @@
   </head>
   <body data-page="home">
     <main class="container">
-      <section class="card">
-        <div class="page-header">
-          <h1>Delivery Experience Study</h1>
-          <p>Start a participant session</p>
+      <section class="card home-page">
+        <div class="home-hero">
+          <div class="home-icon">🍽️</div>
+          <h1 class="home-title">Delivery Experience Study</h1>
+          <p class="home-subtitle">Start your participant session</p>
         </div>
 
-        <form id="session-form" class="form-grid">
-          <label>
-            Participant ID
-            <input id="participant-id" required placeholder="e.g., P-001" />
-          </label>
+        <form id="session-form" class="home-form">
+          <div class="home-input-group">
+            <label for="participant-id" class="home-label">Participant ID</label>
+            <input 
+              id="participant-id" 
+              class="home-input"
+              required 
+              placeholder="e.g., P-001" 
+            />
+          </div>
 
-          <label>
-            Experiment ID
-            <input id="experiment-id" required placeholder="e.g., EXP-001" />
-          </label>
+          <div class="home-input-group">
+            <label for="experiment-id" class="home-label">Experiment ID</label>
+            <input 
+              id="experiment-id" 
+              class="home-input"
+              required 
+              placeholder="e.g., EXP-001" 
+            />
+          </div>
 
-          <button type="submit">Continue</button>
+          <button type="submit" class="home-button">
+            <span>Continue</span>
+            <span class="home-button-arrow">→</span>
+          </button>
         </form>
       </section>
     </main>
