@@ -24,9 +24,9 @@
 
         <!-- Status Card -->
         <div class="delivery-status-card">
-          <div class="status-badge">
+          <div class="status-badge" id="status-badge">
             <span class="status-icon">✓</span>
-            <span class="status-text">ON TIME</span>
+            <span class="status-text" id="status-text">ON TIME</span>
           </div>
           
           <h2 class="status-title">Picking your order now</h2>
@@ -35,13 +35,18 @@
           <div class="delivery-time-badge" id="current-eta">16</div>
         </div>
 
+        <!-- System Clock below the timer -->
+        <div class="system-clock-container">
+          <span id="system-clock" class="system-clock">08:00</span>
+        </div>
+
         <!-- Timeline (hidden by default, can be shown) -->
         <div class="timeline-section hidden">
           <h3>Order Timeline</h3>
           <ul id="timeline" class="timeline"></ul>
         </div>
 
-        <button id="to-rating" class="hidden proceed-rating-btn">
+        <button id="to-rating" class="hidden proceed-rating-btn" disabled>
           <span class="proceed-rating-text">Proceed to Rating</span>
         </button>
       </section>

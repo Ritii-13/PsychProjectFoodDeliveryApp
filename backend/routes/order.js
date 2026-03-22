@@ -117,6 +117,52 @@ function createOrderRouter({ io, db }) {
     }
   });
 
+  router.get('/next-experiment-id', async (req, res) => {
+    try {
+      const participantId = (req.query.participantId || '').trim();
+
+      if (!participantId) {
+        res.status(400).json({ error: 'participantId is required' });
+        return;
+      }
+
+      // Extract the number from participant ID (e.g., "P-001" -> 1)
+      const match = participantId.match(/\d+/);
+      if (!match) {
+        res.status(400).json({ error: 'Invalid participantId format' });
+        return;
+      }
+
+      const participantNum = parseInt(match[0], 10);
+      const startExpNum = ((participantNum - 1) * 100) + 1;
+      const endExpNum = startExpNum + 99; // 100 experiments per participant
+
+      // Get all existing experiment IDs for this participant
+      const existingExperiments = await db.getParticipantExperiments(participantId);
+      const existingExpNums = existingExperiments.map((exp) => {
+        const expMatch = exp.experiment_id.match(/\d+/);
+        return expMatch ? parseInt(expMatch[0], 10) : null;
+      }).filter((num) => num !== null);
+
+      // Find the next available experiment number
+      let nextExpNum = startExpNum;
+      while (existingExpNums.includes(nextExpNum) && nextExpNum <= endExpNum) {
+        nextExpNum += 1;
+      }
+
+      if (nextExpNum > endExpNum) {
+        res.status(400).json({ error: 'All 100 experiments for this participant have been completed' });
+        return;
+      }
+
+      const suggestedExpId = `EXP-${String(nextExpNum).padStart(3, '0')}`;
+      res.json({ suggestedExpId, experimentNumber: nextExpNum, participantNumber: participantNum });
+    } catch (error) {
+      console.error('Failed to get next experiment ID', error);
+      res.status(500).json({ error: 'failed to get next experiment ID' });
+    }
+  });
+
   return router;
 }
 

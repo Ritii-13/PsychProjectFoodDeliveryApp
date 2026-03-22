@@ -17,18 +17,22 @@
 
         <form id="rating-form" class="rating-form">
           <div class="rating-input-group">
-            <label for="rating-overall" class="rating-label">
-              Overall experience (1-5)
+            <label class="rating-label">
+              Overall experience (1-5 stars)
             </label>
+            <div id="star-rating" class="star-rating">
+              <span class="star" data-value="1">☆</span>
+              <span class="star" data-value="2">☆</span>
+              <span class="star" data-value="3">☆</span>
+              <span class="star" data-value="4">☆</span>
+              <span class="star" data-value="5">☆</span>
+            </div>
             <input 
-              type="number" 
+              type="hidden" 
               id="rating-overall" 
-              class="rating-input"
-              min="1" 
-              max="5" 
               required 
-              placeholder="Rate from 1 to 5"
             />
+            <p id="selected-stars" class="selected-stars-display" style="margin-top: 10px; color: #666;"></p>
           </div>
 
           <div class="rating-input-group">

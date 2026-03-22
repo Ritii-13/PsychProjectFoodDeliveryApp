@@ -35,6 +35,7 @@ function createRandomSimulationInput() {
     behaviorRoll: Number(behaviorRoll.toFixed(4)),
     behavior,
     tickIntervalMs: 1000,
+    displayUpdateIntervalTicks: 5,
     delayTriggerEtaMin: randomInt(delayTriggerMin, delayTriggerMax),
     delayHoldTicks: randomInt(6, 12),
     delaySlowProgressChance: Number((0.15 + Math.random() * 0.25).toFixed(2)),
@@ -226,7 +227,8 @@ async function emitEvent({
   onDelivered,
   phase,
   message,
-  etaMin
+  etaMin,
+  behavior
 }) {
   const emittedAt = new Date().toISOString();
 
@@ -252,6 +254,8 @@ async function emitEvent({
     io.to(roomId).emit('order-delivered', {
       participantId,
       experimentId,
+      finalEtaMin: etaMin,
+      behavior,
       emittedAt
     });
   }
@@ -272,6 +276,8 @@ function startDeliverySimulation({
 
   let canceled = false;
   let timer = null;
+  let tickCount = 0;
+  const displayUpdateInterval = input.displayUpdateIntervalTicks || 5;
 
   async function tick() {
     if (canceled) {
@@ -289,17 +295,23 @@ function startDeliverySimulation({
         fasterDropAppliedNow
       });
 
-      await emitEvent({
-        participantId,
-        experimentId,
-        roomId,
-        io,
-        onEvent,
-        onDelivered,
-        phase,
-        message,
-        etaMin: runtime.displayedEtaMin
-      });
+      tickCount += 1;
+
+      // Only emit event every displayUpdateInterval ticks
+      if (tickCount % displayUpdateInterval === 0 || phase === 'delivered') {
+        await emitEvent({
+          participantId,
+          experimentId,
+          roomId,
+          io,
+          onEvent,
+          onDelivered,
+          phase,
+          message,
+          etaMin: runtime.displayedEtaMin,
+          behavior: input.behavior
+        });
+      }
 
       if (phase === 'delivered') {
         canceled = true;
@@ -334,7 +346,8 @@ function startDeliverySimulation({
         onDelivered,
         phase: 'placed',
         message: initialMessage,
-        etaMin: runtime.displayedEtaMin
+        etaMin: runtime.displayedEtaMin,
+        behavior: input.behavior
       });
     } catch (error) {
       console.error(

@@ -1,8 +1,8 @@
 ﻿const STORAGE_KEY = 'delivery-study-state';
 
 const RESTAURANTS = {
-  'pizza-hut': {
-    name: 'Pizza Hut',
+  'pizza-hat': {
+    name: 'Pizza Hat',
     cuisine: 'Pizza',
     image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&h=300&fit=crop',
     rating: '4.2',
@@ -27,8 +27,8 @@ const RESTAURANTS = {
       { id: 'ph16', name: 'Mojito', price: 99, image: 'https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=200&h=200&fit=crop' }
     ]
   },
-  'burger-king': {
-    name: 'Burger King',
+  'burger-queen': {
+    name: 'Burger Queen',
     cuisine: 'Burgers',
     image: 'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400&h=300&fit=crop',
     rating: '4.3',
@@ -53,8 +53,8 @@ const RESTAURANTS = {
       { id: 'bk16', name: 'Ice Cream Sundae', price: 79, image: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=200&h=200&fit=crop' }
     ]
   },
-  'biryani-blues': {
-    name: 'Biryani Blues',
+  'blues-biryani': {
+    name: 'Blues\' Biryani',
     cuisine: 'Biryani',
     image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=400&h=300&fit=crop',
     rating: '4.3',
@@ -79,8 +79,8 @@ const RESTAURANTS = {
       { id: 'bb16', name: 'Masala Chaas', price: 49, image: 'https://images.unsplash.com/photo-1628408891486-e3df4d598c7d?w=200&h=200&fit=crop' }
     ]
   },
-  'punjab-grill': {
-    name: 'Punjab Grill',
+  'punjab-grills': {
+    name: 'Punjab Grills',
     cuisine: 'North Indian',
     image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400&h=300&fit=crop',
     rating: '4.2',
@@ -105,8 +105,8 @@ const RESTAURANTS = {
       { id: 'pg16', name: 'Masala Chai', price: 39, image: 'https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=200&h=200&fit=crop' }
     ]
   },
-  'magnolia-bakery': {
-    name: 'Magnolia Bakery',
+  'magnolia-bakers': {
+    name: 'Magnolia Bakers',
     cuisine: 'Bakery & Desserts',
     image: 'https://images.unsplash.com/photo-1517433670267-08bbd4be890f?w=400&h=300&fit=crop',
     rating: '4.5',
@@ -131,8 +131,8 @@ const RESTAURANTS = {
       { id: 'mb16', name: 'Hot Chocolate', price: 109, image: 'https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?w=200&h=200&fit=crop' }
     ]
   },
-  'chowman': {
-    name: 'Chowman',
+  'chowmans': {
+    name: 'Chowman\'s',
     cuisine: 'Chinese',
     image: 'https://images.unsplash.com/photo-1525755662778-989d0524087e?w=400&h=300&fit=crop',
     rating: '4.1',
@@ -157,8 +157,8 @@ const RESTAURANTS = {
       { id: 'cm16', name: 'Date Pancake', price: 129, image: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=200&h=200&fit=crop' }
     ]
   },
-  'lavonne-icecream': {
-    name: 'Lavonne Ice-cream',
+  'lovely-icecream': {
+    name: 'Lovely Ice-cream',
     cuisine: 'Ice Cream & Desserts',
     image: 'https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=400&h=300&fit=crop',
     rating: '4.6',
@@ -254,11 +254,57 @@ function pageHome() {
     return;
   }
 
+  const participantInput = document.getElementById('participant-id');
+  const experimentInput = document.getElementById('experiment-id');
+
+  // Update suggested experiment ID when participant ID changes
+  async function updateSuggestedExperiment() {
+    const participantId = participantInput.value.trim();
+    
+    if (participantId) {
+      try {
+        // Query the server for the next available experiment ID
+        const response = await fetch(`/api/next-experiment-id?participantId=${encodeURIComponent(participantId)}`);
+        const data = await response.json();
+        
+        if (response.ok) {
+          experimentInput.value = data.suggestedExpId;
+        } else {
+          // Fallback to default suggestion if API fails
+          const match = participantId.match(/\d+/);
+          if (match) {
+            const participantNum = parseInt(match[0], 10);
+            const nextExpNum = ((participantNum - 1) * 100) + 1;
+            const suggestedExpId = `EXP-${String(nextExpNum).padStart(3, '0')}`;
+            experimentInput.value = suggestedExpId;
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch next experiment ID:', error);
+        // Fallback to default suggestion if fetch fails
+        const match = participantId.match(/\d+/);
+        if (match) {
+          const participantNum = parseInt(match[0], 10);
+          const nextExpNum = ((participantNum - 1) * 100) + 1;
+          const suggestedExpId = `EXP-${String(nextExpNum).padStart(3, '0')}`;
+          experimentInput.value = suggestedExpId;
+        }
+      }
+    }
+  }
+
+  // Update on page load to ensure proper initialization
+  updateSuggestedExperiment();
+
+  // Listen for changes in participant ID input and update experiment ID suggestion
+  participantInput.addEventListener('input', updateSuggestedExperiment);
+  participantInput.addEventListener('change', updateSuggestedExperiment);
+
   form.addEventListener('submit', (event) => {
     event.preventDefault();
 
-    const participantId = document.getElementById('participant-id').value.trim();
-    const experimentId = document.getElementById('experiment-id').value.trim();
+    const participantId = participantInput.value.trim();
+    const experimentId = experimentInput.value.trim();
     if (!participantId || !experimentId) {
       return;
     }
@@ -266,11 +312,6 @@ function pageHome() {
     const state = {
       participantId,
       experimentId,
-      // condition: {
-      //   certainty: document.getElementById('condition-certainty').value,
-      //   agency: 'driver',
-      //   emotion: document.getElementById('condition-emotion').value
-      // },
       cart: {},
       orderStarted: false
     };
@@ -564,10 +605,36 @@ function pageDelivery() {
     }, 10000);
   }
 
+  // System Clock Setup - starts at 08:00 and ticks every second (displays as HH:SS)
+  const systemClockEl = document.getElementById('system-clock');
+  let systemClockSeconds = 8 * 3600; // 8 hours in seconds
+
+  function formatTimeHourSecond(totalSeconds) {
+    const hours = Math.floor(totalSeconds / 3600);
+    const seconds = totalSeconds % 60;
+    return `${String(hours % 24).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  }
+
+  function updateSystemClock() {
+    if (systemClockEl) {
+      systemClockEl.textContent = formatTimeHourSecond(systemClockSeconds);
+    }
+    systemClockSeconds += 1;
+  }
+
+  // Start system clock - ticks every second
+  setInterval(updateSystemClock, 1000);
+  // Initial display
+  if (systemClockEl) {
+    systemClockEl.textContent = formatTimeHourSecond(systemClockSeconds);
+  }
+
   const timeline = document.getElementById('timeline');
   const eta = document.getElementById('current-eta');
   const latest = document.getElementById('latest-message');
   const toRating = document.getElementById('to-rating');
+  const statusText = document.getElementById('status-text');
+  const statusBadge = document.getElementById('status-badge');
   const meta = document.getElementById('tracking-meta');
   const restaurantNameEl = document.getElementById('restaurant-name-delivery');
   const seenMilestones = new Set();
@@ -619,15 +686,12 @@ function pageDelivery() {
         // Update ETA display - just show the number
         if (event.eta_min != null) {
           eta.textContent = event.eta_min;
-          // Show proceed button only when timer hits 0
-          if (event.eta_min === 0) {
-            toRating.classList.remove('hidden');
-          }
         }
       });
 
       if (order.status === 'delivered') {
-        toRating.classList.remove('hidden');
+        toRating.classList.add('visible');
+        toRating.disabled = false;
       }
     })
     .catch((error) => {
@@ -651,11 +715,6 @@ function pageDelivery() {
     latest.textContent = event.message;
     eta.textContent = event.etaMin;
     
-    // Show proceed button only when timer hits 0
-    if (event.etaMin === 0) {
-      toRating.classList.remove('hidden');
-    }
-    
     addMilestoneIfNeeded(event.phase, event.emittedAt);
   });
 
@@ -667,7 +726,41 @@ function pageDelivery() {
       return;
     }
 
+    // Map the actual behavior from the simulator to display status
+    const behavior = event.behavior || 'normal';
+    let statusLabel = 'ON TIME';
+    let statusClass = 'status-ontime';
+    
+    console.log('Order delivered with behavior:', behavior);
+    
+    if (behavior === 'faster') {
+      statusLabel = 'EARLY';
+      statusClass = 'status-early';
+      console.log('Status: EARLY (delivery was faster than estimated)');
+    } else if (behavior === 'delay') {
+      statusLabel = 'DELAYED';
+      statusClass = 'status-delayed';
+      console.log('Status: DELAYED (delivery was slower than estimated)');
+    } else {
+      console.log('Status: ON TIME (delivery was as estimated)');
+    }
+    
+    // Update status text
+    if (statusText) {
+      statusText.textContent = statusLabel;
+    }
+    
+    // Update status badge color
+    if (statusBadge) {
+      statusBadge.classList.remove('status-early', 'status-delayed', 'status-ontime');
+      statusBadge.classList.add(statusClass);
+      console.log('Status badge class updated to:', statusClass);
+    }
+    
+    // Make button visible (always green)
     toRating.classList.remove('hidden');
+    toRating.classList.add('visible');
+    toRating.disabled = false;
   });
 
   toRating.addEventListener('click', () => {
@@ -690,8 +783,72 @@ function pageRating() {
   const form = document.getElementById('rating-form');
   const result = document.getElementById('rating-result');
   const backHomeIcon = document.getElementById('back-home-icon');
+  const ratingOverallInput = document.getElementById('rating-overall');
+  const starRatingEl = document.getElementById('star-rating');
+  const selectedStarsDisplayEl = document.getElementById('selected-stars');
 
   meta.textContent = `Participant: ${state.participantId} | Experiment: ${state.experimentId}`;
+
+  // Star rating handler
+  if (starRatingEl) {
+    const stars = starRatingEl.querySelectorAll('.star');
+    
+    stars.forEach((star) => {
+      star.addEventListener('click', () => {
+        const value = parseInt(star.getAttribute('data-value'), 10);
+        ratingOverallInput.value = value;
+        
+        // Update star display
+        stars.forEach((s) => {
+          const sValue = parseInt(s.getAttribute('data-value'), 10);
+          if (sValue <= value) {
+            s.textContent = '★';
+            s.style.color = '#FFD700';
+          } else {
+            s.textContent = '☆';
+            s.style.color = '#ccc';
+          }
+        });
+        
+        // Update the display text
+        if (selectedStarsDisplayEl) {
+          selectedStarsDisplayEl.textContent = `${value} star${value !== 1 ? 's' : ''} selected`;
+        }
+      });
+
+      // Hover effect
+      star.addEventListener('mouseenter', () => {
+        const value = parseInt(star.getAttribute('data-value'), 10);
+        stars.forEach((s) => {
+          const sValue = parseInt(s.getAttribute('data-value'), 10);
+          if (sValue <= value) {
+            s.textContent = '★';
+            s.style.opacity = '0.7';
+          } else {
+            s.textContent = '☆';
+            s.style.opacity = '1';
+          }
+        });
+      });
+    });
+
+    starRatingEl.addEventListener('mouseleave', () => {
+      const selectedValue = ratingOverallInput.value;
+      stars.forEach((s) => {
+        s.style.opacity = '1';
+        if (selectedValue) {
+          const sValue = parseInt(s.getAttribute('data-value'), 10);
+          if (sValue <= selectedValue) {
+            s.textContent = '★';
+            s.style.color = '#FFD700';
+          } else {
+            s.textContent = '☆';
+            s.style.color = '#ccc';
+          }
+        }
+      });
+    });
+  }
 
   backHomeIcon.addEventListener('click', () => {
     localStorage.removeItem(STORAGE_KEY);
@@ -705,8 +862,8 @@ function pageRating() {
       participantId: state.participantId,
       experimentId: state.experimentId,
       overall: Number(document.getElementById('rating-overall').value),
-      trust: document.getElementById('rating-trust').value,
-      fairness: document.getElementById('rating-fairness').value,
+      trust: document.getElementById('rating-trust')?.value || null,
+      fairness: document.getElementById('rating-fairness')?.value || null,
       comments: document.getElementById('rating-comments').value
     };
 

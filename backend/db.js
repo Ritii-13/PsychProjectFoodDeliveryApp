@@ -400,6 +400,18 @@ function saveRating({ participantId, experimentId, overall, trust, fairness, com
   );
 }
 
+function getParticipantExperiments(participantId) {
+  return all(
+    `
+      SELECT DISTINCT experiment_id
+      FROM orders
+      WHERE participant_id = ?
+      ORDER BY experiment_id ASC
+    `,
+    [participantId]
+  );
+}
+
 module.exports = {
   init,
   createOrder,
@@ -408,5 +420,6 @@ module.exports = {
   markOrderDelivered,
   getOrder,
   getOrderEvents,
-  saveRating
+  saveRating,
+  getParticipantExperiments
 };
