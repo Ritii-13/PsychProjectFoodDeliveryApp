@@ -20,26 +20,34 @@
             <label for="participant-id" class="home-label">
               Participant ID
             </label>
-            <input 
-              id="participant-id" 
-              class="home-input"
-              required 
-              placeholder="e.g., P-001" 
-              value="P-001"
-            />
+            <div class="home-input-with-buttons">
+              <button type="button" class="home-decrement-btn" id="participant-decrement" title="Decrease">−</button>
+              <input 
+                id="participant-id" 
+                class="home-input"
+                required 
+                placeholder="e.g., P-001" 
+                value="P-001"
+              />
+              <button type="button" class="home-increment-btn" id="participant-increment" title="Increase">+</button>
+            </div>
           </div>
 
           <div class="home-input-group">
             <label for="experiment-id" class="home-label">
               Experiment ID
             </label>
-            <input 
-              id="experiment-id" 
-              class="home-input"
-              required 
-              placeholder="e.g., EXP-001" 
-              value="EXP-001"
-            />
+            <div class="home-input-with-buttons">
+              <button type="button" class="home-decrement-btn" id="experiment-decrement" title="Decrease">−</button>
+              <input 
+                id="experiment-id" 
+                class="home-input"
+                required 
+                placeholder="e.g., 001" 
+                value="001"
+              />
+              <button type="button" class="home-increment-btn" id="experiment-increment" title="Increase">+</button>
+            </div>
           </div>
 
           <button type="submit" class="home-button">

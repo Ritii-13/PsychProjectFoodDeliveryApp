@@ -412,6 +412,17 @@ function getParticipantExperiments(participantId) {
   );
 }
 
+function getAllExperiments() {
+  return all(
+    `
+      SELECT DISTINCT experiment_id
+      FROM orders
+      ORDER BY experiment_id ASC
+    `,
+    []
+  );
+}
+
 module.exports = {
   init,
   createOrder,
@@ -421,5 +432,6 @@ module.exports = {
   getOrder,
   getOrderEvents,
   saveRating,
-  getParticipantExperiments
+  getParticipantExperiments,
+  getAllExperiments
 };

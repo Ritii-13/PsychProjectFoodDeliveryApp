@@ -256,44 +256,112 @@ function pageHome() {
 
   const participantInput = document.getElementById('participant-id');
   const experimentInput = document.getElementById('experiment-id');
+  
+  // Load last participant ID from session storage
+  const state = getState();
+  console.log('Home page loaded. Stored state:', state);
+  
+  if (state && state.participantId) {
+    console.log('Restoring previous participant ID:', state.participantId);
+    participantInput.value = state.participantId;
+  } else {
+    console.log('No previous participant ID found, using default');
+  }
+  
+  const participantDecrement = document.getElementById('participant-decrement');
+  const participantIncrement = document.getElementById('participant-increment');
+  const experimentDecrement = document.getElementById('experiment-decrement');
+  const experimentIncrement = document.getElementById('experiment-increment');
 
   // Update suggested experiment ID when participant ID changes
   async function updateSuggestedExperiment() {
     const participantId = participantInput.value.trim();
     
+    console.log('updateSuggestedExperiment called with participantId:', participantId);
+    
     if (participantId) {
       try {
-        // Query the server for the next available experiment ID
+        // Query the server for the next available experiment ID (globally sequential)
         const response = await fetch(`/api/next-experiment-id?participantId=${encodeURIComponent(participantId)}`);
         const data = await response.json();
         
+        console.log('Server response:', { response: response.ok, data });
+        
         if (response.ok) {
+          console.log('Setting experiment ID to:', data.suggestedExpId);
           experimentInput.value = data.suggestedExpId;
         } else {
-          // Fallback to default suggestion if API fails
-          const match = participantId.match(/\d+/);
-          if (match) {
-            const participantNum = parseInt(match[0], 10);
-            const nextExpNum = ((participantNum - 1) * 100) + 1;
-            const suggestedExpId = `EXP-${String(nextExpNum).padStart(3, '0')}`;
-            experimentInput.value = suggestedExpId;
-          }
+          // Fallback to 001 if API fails
+          console.log('Server error, using fallback experiment ID: 001');
+          experimentInput.value = '001';
         }
       } catch (error) {
         console.error('Failed to fetch next experiment ID:', error);
-        // Fallback to default suggestion if fetch fails
-        const match = participantId.match(/\d+/);
-        if (match) {
-          const participantNum = parseInt(match[0], 10);
-          const nextExpNum = ((participantNum - 1) * 100) + 1;
-          const suggestedExpId = `EXP-${String(nextExpNum).padStart(3, '0')}`;
-          experimentInput.value = suggestedExpId;
-        }
+        // Fallback to 001 if fetch fails
+        console.log('Fetch error, using fallback experiment ID: 001');
+        experimentInput.value = '001';
       }
     }
   }
 
+  // Helper function to extract number from ID
+  function extractNumber(idString) {
+    const match = idString.match(/\d+/);
+    return match ? parseInt(match[0], 10) : 0;
+  }
+
+  // Helper function to format participant ID
+  function formatParticipantId(num) {
+    return `P-${String(num).padStart(3, '0')}`;
+  }
+
+  // Helper function to format experiment ID
+  function formatExperimentId(num) {
+    return String(num).padStart(3, '0');
+  }
+
+  // Participant ID increment/decrement handlers
+  if (participantIncrement) {
+    participantIncrement.addEventListener('click', (e) => {
+      e.preventDefault();
+      const currentNum = extractNumber(participantInput.value);
+      participantInput.value = formatParticipantId(currentNum + 1);
+      updateSuggestedExperiment();
+    });
+  }
+
+  if (participantDecrement) {
+    participantDecrement.addEventListener('click', (e) => {
+      e.preventDefault();
+      const currentNum = extractNumber(participantInput.value);
+      if (currentNum > 1) {
+        participantInput.value = formatParticipantId(currentNum - 1);
+        updateSuggestedExperiment();
+      }
+    });
+  }
+
+  // Experiment ID increment/decrement handlers (globally sequential, no limits)
+  if (experimentIncrement) {
+    experimentIncrement.addEventListener('click', (e) => {
+      e.preventDefault();
+      const currentNum = extractNumber(experimentInput.value);
+      experimentInput.value = formatExperimentId(currentNum + 1);
+    });
+  }
+
+  if (experimentDecrement) {
+    experimentDecrement.addEventListener('click', (e) => {
+      e.preventDefault();
+      const currentNum = extractNumber(experimentInput.value);
+      if (currentNum > 0) {
+        experimentInput.value = formatExperimentId(currentNum - 1);
+      }
+    });
+  }
+
   // Update on page load to ensure proper initialization
+  console.log('Calling updateSuggestedExperiment at page load. Participant ID is:', participantInput.value);
   updateSuggestedExperiment();
 
   // Listen for changes in participant ID input and update experiment ID suggestion
@@ -305,7 +373,11 @@ function pageHome() {
 
     const participantId = participantInput.value.trim();
     const experimentId = experimentInput.value.trim();
+    
+    console.log('Form submitted with:', { participantId, experimentId });
+    
     if (!participantId || !experimentId) {
+      console.log('Form validation failed: missing participantId or experimentId');
       return;
     }
 
@@ -316,6 +388,7 @@ function pageHome() {
       orderStarted: false
     };
 
+    console.log('Saving state to localStorage:', state);
     setState(state);
     window.location.href = 'transition.html';
   });
@@ -605,6 +678,12 @@ function pageDelivery() {
     }, 10000);
   }
 
+  // Set order placed time (8:00)
+  const orderPlacedTimeEl = document.getElementById('order-placed-time');
+  if (orderPlacedTimeEl) {
+    orderPlacedTimeEl.textContent = '8:00';
+  }
+
   // System Clock Setup - starts at 08:00 and ticks every second (displays as HH:SS)
   const systemClockEl = document.getElementById('system-clock');
   let systemClockSeconds = 8 * 3600; // 8 hours in seconds
@@ -754,6 +833,8 @@ function pageDelivery() {
     if (statusBadge) {
       statusBadge.classList.remove('status-early', 'status-delayed', 'status-ontime');
       statusBadge.classList.add(statusClass);
+      // Add blinking animation when delivery arrives
+      statusBadge.classList.add('blinking');
       console.log('Status badge class updated to:', statusClass);
     }
     
@@ -851,7 +932,16 @@ function pageRating() {
   }
 
   backHomeIcon.addEventListener('click', () => {
-    localStorage.removeItem(STORAGE_KEY);
+    // Reset session but preserve participantId for next experiment
+    const currentState = getState();
+    const newState = {
+      participantId: currentState.participantId || 'P-001',
+      experimentId: '',
+      cart: {},
+      orderStarted: false
+    };
+    setState(newState);
+    console.log('Session reset. Preserved participant ID:', newState.participantId);
     window.location.href = 'index.html';
   });
 

@@ -126,37 +126,26 @@ function createOrderRouter({ io, db }) {
         return;
       }
 
-      // Extract the number from participant ID (e.g., "P-001" -> 1)
-      const match = participantId.match(/\d+/);
-      if (!match) {
-        res.status(400).json({ error: 'Invalid participantId format' });
-        return;
-      }
-
-      const participantNum = parseInt(match[0], 10);
-      const startExpNum = ((participantNum - 1) * 100) + 1;
-      const endExpNum = startExpNum + 99; // 100 experiments per participant
-
-      // Get all existing experiment IDs for this participant
-      const existingExperiments = await db.getParticipantExperiments(participantId);
-      const existingExpNums = existingExperiments.map((exp) => {
+      // Get all experiments FOR THIS PARTICIPANT (not globally)
+      const participantExperiments = await db.getParticipantExperiments(participantId);
+      console.log(`Experiments for participant ${participantId}:`, participantExperiments);
+      
+      const existingExpNums = participantExperiments.map((exp) => {
         const expMatch = exp.experiment_id.match(/\d+/);
         return expMatch ? parseInt(expMatch[0], 10) : null;
       }).filter((num) => num !== null);
 
-      // Find the next available experiment number
-      let nextExpNum = startExpNum;
-      while (existingExpNums.includes(nextExpNum) && nextExpNum <= endExpNum) {
-        nextExpNum += 1;
-      }
+      console.log('Extracted experiment numbers for this participant:', existingExpNums);
 
-      if (nextExpNum > endExpNum) {
-        res.status(400).json({ error: 'All 100 experiments for this participant have been completed' });
-        return;
-      }
+      // Find the maximum experiment number for THIS PARTICIPANT and get the next one
+      // Start from 1, not 0
+      const maxExpNum = existingExpNums.length > 0 ? Math.max(...existingExpNums) : 0;
+      const nextExpNum = maxExpNum + 1;
 
-      const suggestedExpId = `EXP-${String(nextExpNum).padStart(3, '0')}`;
-      res.json({ suggestedExpId, experimentNumber: nextExpNum, participantNumber: participantNum });
+      console.log(`Max experiment number for ${participantId}:`, maxExpNum, '-> Next will be:', nextExpNum);
+
+      const suggestedExpId = String(nextExpNum).padStart(3, '0');
+      res.json({ suggestedExpId, experimentNumber: nextExpNum });
     } catch (error) {
       console.error('Failed to get next experiment ID', error);
       res.status(500).json({ error: 'failed to get next experiment ID' });

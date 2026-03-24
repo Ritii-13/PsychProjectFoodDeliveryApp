@@ -1171,6 +1171,49 @@ img {
   color: #93959f;
 }
 
+/* Input with increment/decrement buttons */
+.home-input-with-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.home-input-with-buttons .home-input {
+  margin: 0;
+}
+
+.home-decrement-btn,
+.home-increment-btn {
+  width: 44px;
+  height: 48px;
+  padding: 0;
+  border: 2px solid #e9e9eb;
+  border-radius: 12px;
+  background: white;
+  color: #282c3f;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.home-decrement-btn:hover,
+.home-increment-btn:hover {
+  background: #f9f9fb;
+  border-color: #fc8019;
+  color: #fc8019;
+}
+
+.home-decrement-btn:active,
+.home-increment-btn:active {
+  background: #efefef;
+  transform: scale(0.95);
+}
+
 .home-button {
   width: 100%;
   padding: 16px 24px;
@@ -1444,4 +1487,39 @@ img {
   color: #666;
   margin: 0 !important;
 }
+
+/* Order Placed Section Styles */
+.order-placed-section {
+  text-align: center;
+  margin-top: 24px;
+  padding-top: 12px;
+  border-top: 1px solid #e8e8e8;
+}
+
+.order-placed-label {
+  font-size: 13px;
+  color: #9c9c9c;
+  margin: 0 0 8px 0;
+  font-weight: 500;
+}
+
+#order-placed-time {
+  font-weight: 600;
+  color: #282c3f;
+}
+
+/* Blinking animation for status badge when delivery arrives */
+@keyframes blink {
+  0%, 49% {
+    opacity: 1;
+  }
+  50%, 100% {
+    opacity: 0.5;
+  }
+}
+
+.status-badge.blinking {
+  animation: blink 0.8s ease-in-out 5;
+}
+
 
