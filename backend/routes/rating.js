@@ -1,6 +1,6 @@
 ﻿const express = require('express');
 
-function createRatingRouter({ db }) {
+function createRatingRouter({ db, triggers }) {
   const router = express.Router();
 
   router.post('/rating', async (req, res) => {
@@ -35,6 +35,17 @@ function createRatingRouter({ db }) {
         trust,
         fairness,
         comments
+      });
+      await triggers.send({
+        eventName: 'rating_submitted',
+        participantId,
+        experimentId,
+        source: 'backend_rating',
+        metadata: {
+          overall,
+          trust,
+          fairness
+        }
       });
 
       res.status(201).json({ ok: true });

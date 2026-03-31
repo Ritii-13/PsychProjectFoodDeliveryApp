@@ -36,3 +36,21 @@ A basic localhost web prototype for food-delivery psychology experiments.
 - `orders` uses a composite primary key: (`participant_id`, `experiment_id`).
 - Simulation emits updates every ~6 seconds for quick testing.
 - Data is stored in `backend/data/experiment.db`.
+
+## EEG Trigger Bridge
+- Shared trigger codes live in `config/eeg-trigger-map.json`.
+- Frontend page-entry markers are posted to `POST /api/experiment-event`.
+- Backend emits semantic markers for `order_created`, `order_delivered`, and `rating_submitted`.
+- Run the local Python bridge on the EEG machine:
+  `npm run eeg:bridge`
+- For development without hardware:
+  `npm run eeg:bridge:dry-run`
+
+### Config
+- `EEG_TRIGGER_MODE=noop|bridge`
+- `EEG_TRIGGER_BRIDGE_URL=http://127.0.0.1:8765`
+- Python bridge parallel port default: `0x3EFC`
+
+### Verification
+- End-to-end dry-run verification:
+  `npm run test:eeg`

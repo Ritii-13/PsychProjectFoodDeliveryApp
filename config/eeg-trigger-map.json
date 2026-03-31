@@ -1,0 +1,10 @@
+{
+  "transition_onset": 11,
+  "restaurants_onset": 12,
+  "menu_onset": 13,
+  "order_created": 14,
+  "delivery_onset": 15,
+  "order_delivered": 16,
+  "rating_onset": 17,
+  "rating_submitted": 18
+}

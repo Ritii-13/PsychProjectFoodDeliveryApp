@@ -248,6 +248,52 @@ function requireSession() {
   return state;
 }
 
+const sentExperimentEvents = new Set();
+
+function emitExperimentEvent(eventName, state, source = 'frontend_page') {
+  if (!state || !state.participantId || !state.experimentId) {
+    return;
+  }
+
+  const dedupeKey = [
+    eventName,
+    state.participantId,
+    state.experimentId,
+    window.location.pathname
+  ].join(':');
+
+  if (sentExperimentEvents.has(dedupeKey)) {
+    return;
+  }
+
+  sentExperimentEvents.add(dedupeKey);
+
+  void fetch('/api/experiment-event', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    keepalive: true,
+    body: JSON.stringify({
+      eventName,
+      participantId: state.participantId,
+      experimentId: state.experimentId,
+      source,
+      clientTimestamp: new Date().toISOString(),
+      page: document.body.dataset.page || '',
+      path: window.location.pathname
+    })
+  }).catch((error) => {
+    console.error(`Failed to emit experiment event ${eventName}`, error);
+  });
+}
+
+function emitPageOnsetAfterPaint(eventName, state) {
+  window.requestAnimationFrame(() => {
+    window.requestAnimationFrame(() => {
+      emitExperimentEvent(eventName, state);
+    });
+  });
+}
+
 function pageHome() {
   const form = document.getElementById('session-form');
   if (!form) {
@@ -394,6 +440,24 @@ function pageHome() {
   });
 }
 
+function pageTransition() {
+  const state = requireSession();
+  if (!state) {
+    return;
+  }
+
+  const participantInfo = document.getElementById('participant-info');
+  if (participantInfo) {
+    participantInfo.textContent = `Participant ${state.participantId} Experiment ${state.experimentId}`;
+  }
+
+  emitPageOnsetAfterPaint('transition_onset', state);
+
+  setTimeout(() => {
+    window.location.href = 'restaurants.html';
+  }, 2000);
+}
+
 function pageRestaurants() {
   const state = requireSession();
   if (!state) {
@@ -443,6 +507,8 @@ function pageRestaurants() {
     
     restaurantList.appendChild(card);
   });
+
+  emitPageOnsetAfterPaint('restaurants_onset', state);
 }
 
 function pageMenu() {
@@ -624,6 +690,7 @@ function pageMenu() {
 
   renderMenu();
   renderCart();
+  emitPageOnsetAfterPaint('menu_onset', state);
 }
 
 async function loadOrder(participantId, experimentId) {
@@ -727,6 +794,7 @@ function pageDelivery() {
   }
 
   meta.textContent = `Participant: ${state.participantId} | Experiment: ${state.experimentId}`;
+  emitPageOnsetAfterPaint('delivery_onset', state);
 
   function appendTimeline(text, emittedAt) {
     const li = document.createElement('li');
@@ -757,6 +825,37 @@ function pageDelivery() {
     appendTimeline(milestoneText, emittedAt);
   }
 
+  function applyDeliveredUi(behavior = 'normal') {
+    let statusLabel = 'ON TIME';
+    let statusClass = 'status-ontime';
+
+    if (behavior === 'faster') {
+      statusLabel = 'EARLY';
+      statusClass = 'status-early';
+    } else if (behavior === 'delay') {
+      statusLabel = 'DELAYED';
+      statusClass = 'status-delayed';
+    }
+
+    if (statusText) {
+      statusText.textContent = statusLabel;
+    }
+
+    if (statusBadge) {
+      statusBadge.classList.remove('status-early', 'status-delayed', 'status-ontime');
+      statusBadge.classList.add(statusClass);
+      statusBadge.classList.add('blinking');
+    }
+
+    if (eta) {
+      eta.textContent = '0';
+    }
+
+    toRating.classList.remove('hidden');
+    toRating.classList.add('visible');
+    toRating.disabled = false;
+  }
+
   loadOrder(state.participantId, state.experimentId)
     .then(({ events, order }) => {
       events.forEach((event) => {
@@ -768,9 +867,9 @@ function pageDelivery() {
         }
       });
 
-      if (order.status === 'delivered') {
-        toRating.classList.add('visible');
-        toRating.disabled = false;
+      const deliveredEvent = [...events].reverse().find((event) => event.phase === 'delivered');
+      if (deliveredEvent || order.status === 'delivered') {
+        applyDeliveredUi(order.eta_behavior || 'normal');
       }
     })
     .catch((error) => {
@@ -805,43 +904,7 @@ function pageDelivery() {
       return;
     }
 
-    // Map the actual behavior from the simulator to display status
-    const behavior = event.behavior || 'normal';
-    let statusLabel = 'ON TIME';
-    let statusClass = 'status-ontime';
-    
-    console.log('Order delivered with behavior:', behavior);
-    
-    if (behavior === 'faster') {
-      statusLabel = 'EARLY';
-      statusClass = 'status-early';
-      console.log('Status: EARLY (delivery was faster than estimated)');
-    } else if (behavior === 'delay') {
-      statusLabel = 'DELAYED';
-      statusClass = 'status-delayed';
-      console.log('Status: DELAYED (delivery was slower than estimated)');
-    } else {
-      console.log('Status: ON TIME (delivery was as estimated)');
-    }
-    
-    // Update status text
-    if (statusText) {
-      statusText.textContent = statusLabel;
-    }
-    
-    // Update status badge color
-    if (statusBadge) {
-      statusBadge.classList.remove('status-early', 'status-delayed', 'status-ontime');
-      statusBadge.classList.add(statusClass);
-      // Add blinking animation when delivery arrives
-      statusBadge.classList.add('blinking');
-      console.log('Status badge class updated to:', statusClass);
-    }
-    
-    // Make button visible (always green)
-    toRating.classList.remove('hidden');
-    toRating.classList.add('visible');
-    toRating.disabled = false;
+    applyDeliveredUi(event.behavior || 'normal');
   });
 
   toRating.addEventListener('click', () => {
@@ -869,6 +932,7 @@ function pageRating() {
   const selectedStarsDisplayEl = document.getElementById('selected-stars');
 
   meta.textContent = `Participant: ${state.participantId} | Experiment: ${state.experimentId}`;
+  emitPageOnsetAfterPaint('rating_onset', state);
 
   // Star rating handler
   if (starRatingEl) {
@@ -984,6 +1048,8 @@ const page = document.body.dataset.page;
 
 if (page === 'home') {
   pageHome();
+} else if (page === 'transition') {
+  pageTransition();
 } else if (page === 'restaurants') {
   pageRestaurants();
 } else if (page === 'menu') {

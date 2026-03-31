@@ -2,6 +2,11 @@
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function getIntEnv(name, fallback) {
+  const value = Number.parseInt(process.env[name] || '', 10);
+  return Number.isInteger(value) ? value : fallback;
+}
+
 function pickBehavior(roll) {
   const forcedBehavior = String(process.env.SIMULATION_BEHAVIOR || '')
     .trim()
@@ -21,7 +26,7 @@ function pickBehavior(roll) {
 }
 
 function createRandomSimulationInput() {
-  const initialEtaMin = randomInt(30, 50);
+  const initialEtaMin = getIntEnv('SIMULATION_INITIAL_ETA_MIN', randomInt(30, 50));
   const behaviorRoll = Math.random();
   const behavior = pickBehavior(behaviorRoll);
 
@@ -34,8 +39,8 @@ function createRandomSimulationInput() {
     initialEtaMin,
     behaviorRoll: Number(behaviorRoll.toFixed(4)),
     behavior,
-    tickIntervalMs: 1000,
-    displayUpdateIntervalTicks: 5,
+    tickIntervalMs: getIntEnv('SIMULATION_TICK_INTERVAL_MS', 1000),
+    displayUpdateIntervalTicks: getIntEnv('SIMULATION_DISPLAY_UPDATE_INTERVAL_TICKS', 5),
     delayTriggerEtaMin: randomInt(delayTriggerMin, delayTriggerMax),
     delayHoldTicks: randomInt(6, 12),
     delaySlowProgressChance: Number((0.15 + Math.random() * 0.25).toFixed(2)),

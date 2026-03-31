@@ -1,0 +1,9 @@
+timestamp,eventName,code,participantId,experimentId,source,clientTimestamp,serverTimestamp,bridgeMode,status,error
+2026-03-29T20:50:20.754589+00:00,transition_onset,11,P-EEG-1774817419806,EEG-1774817419806,test_frontend,,2026-03-29T20:50:20.697Z,dry-run,accepted,
+2026-03-29T20:50:20.791274+00:00,restaurants_onset,12,P-EEG-1774817419806,EEG-1774817419806,test_frontend,,2026-03-29T20:50:20.787Z,dry-run,accepted,
+2026-03-29T20:50:20.805389+00:00,menu_onset,13,P-EEG-1774817419806,EEG-1774817419806,test_frontend,,2026-03-29T20:50:20.800Z,dry-run,accepted,
+2026-03-29T20:50:20.819871+00:00,delivery_onset,15,P-EEG-1774817419806,EEG-1774817419806,test_frontend,,2026-03-29T20:50:20.814Z,dry-run,accepted,
+2026-03-29T20:50:20.834735+00:00,rating_onset,17,P-EEG-1774817419806,EEG-1774817419806,test_frontend,,2026-03-29T20:50:20.830Z,dry-run,accepted,
+2026-03-29T20:50:20.865674+00:00,order_created,14,P-EEG-1774817419806,EEG-1774817419806,backend_order,,2026-03-29T20:50:20.861Z,dry-run,accepted,
+2026-03-29T20:50:20.923756+00:00,order_delivered,16,P-EEG-1774817419806,EEG-1774817419806,backend_delivery_phase,,2026-03-29T20:50:20.919Z,dry-run,accepted,
+2026-03-29T20:50:20.965741+00:00,rating_submitted,18,P-EEG-1774817419806,EEG-1774817419806,backend_rating,,2026-03-29T20:50:20.960Z,dry-run,accepted,

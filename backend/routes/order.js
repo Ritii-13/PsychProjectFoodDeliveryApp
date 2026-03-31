@@ -19,7 +19,33 @@ function makeOrderRoom(participantId, experimentId) {
   return `order:${participantId}:${experimentId}`;
 }
 
-function createOrderRouter({ io, db }) {
+function createDeliveryPhaseMarkerSender({ participantId, experimentId, triggers }) {
+  const seenPhases = new Set();
+  const phaseEventMap = {
+    delivered: 'order_delivered'
+  };
+
+  return async function sendPhaseMarker(phase, metadata) {
+    const eventName = phaseEventMap[phase];
+    if (!eventName || seenPhases.has(phase)) {
+      return;
+    }
+
+    seenPhases.add(phase);
+    await triggers.send({
+      eventName,
+      participantId,
+      experimentId,
+      source: 'backend_delivery_phase',
+      metadata: {
+        phase,
+        ...metadata
+      }
+    });
+  };
+}
+
+function createOrderRouter({ io, db, triggers }) {
   const router = express.Router();
 
   router.post('/order', async (req, res) => {
@@ -54,8 +80,23 @@ function createOrderRouter({ io, db }) {
         simulationInput
       });
       await db.setOrderStatus(participantId, experimentId, 'in_progress');
+      await triggers.send({
+        eventName: 'order_created',
+        participantId,
+        experimentId,
+        source: 'backend_order',
+        metadata: {
+          cartSize: cart.length,
+          condition
+        }
+      });
 
       const roomId = makeOrderRoom(participantId, experimentId);
+      const sendDeliveryPhaseMarker = createDeliveryPhaseMarkerSender({
+        participantId,
+        experimentId,
+        triggers
+      });
 
       startDeliverySimulation({
         participantId,
@@ -64,14 +105,16 @@ function createOrderRouter({ io, db }) {
         condition,
         simulationInput,
         io,
-        onEvent: ({ participantId: pid, experimentId: eid, phase, message, etaMin }) =>
-          db.insertOrderEvent({
+        onEvent: async ({ participantId: pid, experimentId: eid, phase, message, etaMin }) => {
+          await db.insertOrderEvent({
             participantId: pid,
             experimentId: eid,
             phase,
             message,
             etaMin
-          }),
+          });
+          await sendDeliveryPhaseMarker(phase, { etaMin, message });
+        },
         onDelivered: ({ participantId: pid, experimentId: eid }) =>
           db.markOrderDelivered(pid, eid)
       });

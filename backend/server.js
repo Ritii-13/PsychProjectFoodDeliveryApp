@@ -4,12 +4,15 @@ const http = require('http');
 const { Server } = require('socket.io');
 
 const db = require('./db');
+const { createTriggerClient } = require('./eeg/trigger-client');
+const { createExperimentEventRouter } = require('./routes/experiment-event');
 const { createOrderRouter } = require('./routes/order');
 const { createRatingRouter } = require('./routes/rating');
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
+const triggers = createTriggerClient();
 
 const PORT = process.env.PORT || 3000;
 
@@ -18,8 +21,9 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, '..', 'frontend')));
 
-app.use('/api', createOrderRouter({ io, db }));
-app.use('/api', createRatingRouter({ db }));
+app.use('/api', createExperimentEventRouter({ triggers }));
+app.use('/api', createOrderRouter({ io, db, triggers }));
+app.use('/api', createRatingRouter({ db, triggers }));
 
 io.on('connection', (socket) => {
   socket.on('join-order', (session) => {
