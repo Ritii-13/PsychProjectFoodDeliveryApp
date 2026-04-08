@@ -170,11 +170,15 @@ async function main() {
     await waitForJson(`http://127.0.0.1:${serverPort}/health`, 'server health');
 
     const frontendEvents = [
+      'trial_start',
+      'fixation_start',
       'transition_onset',
       'restaurants_onset',
       'menu_onset',
+      'stimulus_onset',
       'delivery_onset',
-      'rating_onset'
+      'rating_onset',
+      'response_made'
     ];
 
     for (const eventName of frontendEvents) {
@@ -225,11 +229,15 @@ async function main() {
 
     const rows = readCsvRows(bridgeLogPath);
     const expectedEvents = [
+      'trial_start',
+      'fixation_start',
       'transition_onset',
       'restaurants_onset',
       'menu_onset',
+      'stimulus_onset',
       'delivery_onset',
       'rating_onset',
+      'response_made',
       'order_created',
       'order_delivered',
       'rating_submitted'

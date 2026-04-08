@@ -41,6 +41,7 @@ A basic localhost web prototype for food-delivery psychology experiments.
 - Shared trigger codes live in `config/eeg-trigger-map.json`.
 - Frontend page-entry markers are posted to `POST /api/experiment-event`.
 - Backend emits semantic markers for `order_created`, `order_delivered`, and `rating_submitted`.
+- EEG-style analysis markers also include `trial_start`, `fixation_start`, `stimulus_onset`, and `response_made`.
 - Run the local Python bridge on the EEG machine:
   `npm run eeg:bridge`
 - For development without hardware:

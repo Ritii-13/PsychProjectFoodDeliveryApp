@@ -6,5 +6,9 @@
   "delivery_onset": 15,
   "order_delivered": 16,
   "rating_onset": 17,
-  "rating_submitted": 18
+  "rating_submitted": 18,
+  "trial_start": 19,
+  "fixation_start": 20,
+  "stimulus_onset": 21,
+  "response_made": 22
 }

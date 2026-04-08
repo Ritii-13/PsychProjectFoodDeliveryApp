@@ -452,6 +452,8 @@ function pageTransition() {
   }
 
   emitPageOnsetAfterPaint('transition_onset', state);
+  emitPageOnsetAfterPaint('trial_start', state);
+  emitPageOnsetAfterPaint('fixation_start', state);
 
   setTimeout(() => {
     window.location.href = 'restaurants.html';
@@ -795,6 +797,7 @@ function pageDelivery() {
 
   meta.textContent = `Participant: ${state.participantId} | Experiment: ${state.experimentId}`;
   emitPageOnsetAfterPaint('delivery_onset', state);
+  emitPageOnsetAfterPaint('stimulus_onset', state);
 
   function appendTimeline(text, emittedAt) {
     const li = document.createElement('li');
@@ -941,6 +944,7 @@ function pageRating() {
     stars.forEach((star) => {
       star.addEventListener('click', () => {
         const value = parseInt(star.getAttribute('data-value'), 10);
+        emitExperimentEvent('response_made', state, 'frontend_response');
         ratingOverallInput.value = value;
         
         // Update star display
