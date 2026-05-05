@@ -1,3 +1,5 @@
+
+
 from __future__ import annotations
 
 import argparse
@@ -26,6 +28,17 @@ LOG_FIELDS = [
     "error",
 ]
 
+TRIGGER_MAP = {
+  "transition_onset": 1,
+  "restaurants_onset": 2,
+  "menu_onset": 3,
+  "order_created": 4,
+  "delivery_onset": 5,
+  "order_delivered": 6,
+  "rating_onset": 7,
+  "rating_submitted": 8
+}
+
 
 def now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
@@ -41,13 +54,10 @@ def normalize_csv_value(value) -> str:
     return str(value or "").replace(",", ";").replace("\r", " ").replace("\n", " ")
 
 
-def load_trigger_map(trigger_map_path: Path) -> dict[str, int]:
-    debug(f"Loading trigger map from: {trigger_map_path}")
-    with trigger_map_path.open("r", encoding="utf-8") as file:
-        data = json.load(file)
+def load_trigger_map(TRIGGER_MAP):
 
-    trigger_map = {str(name): int(code) for name, code in data.items()}
-    debug(f"Loaded {len(trigger_map)} triggers: {list(trigger_map.keys())}")
+    trigger_map = TRIGGER_MAP
+    debug(f"Loaded triggers")
     return trigger_map
 
 
@@ -136,22 +146,25 @@ class TriggerBridgeServer(ThreadingHTTPServer):
         log_path: Path,
         trigger_map_path: Path,
     ):
+        debug("TriggerBridgeServer invoked")
         super().__init__(server_address, TriggerBridgeHandler)
         self.trigger_map = trigger_map
         self.output = output
         self.log_path = log_path
         self.trigger_map_path = trigger_map_path
+        debug(f"  trigger_map type={type(trigger_map).__name__}, keys={list(trigger_map.keys())}")
 
 
 class TriggerBridgeHandler(BaseHTTPRequestHandler):
     server: TriggerBridgeServer
-
     def log_message(self, format, *args):  # noqa: A003
         # Re-enable HTTP request logging for debugging
+        debug("inside logging")
         debug(f"HTTP {self.command} {self.path} — {format % args}")
 
     def _write_json(self, status_code: int, payload: dict) -> None:
         body = json.dumps(payload).encode("utf-8")
+        debug("writing")
         self.send_response(status_code)
         self.send_header("Content-Type", "application/json")
         self.send_header("Content-Length", str(len(body)))
@@ -309,7 +322,7 @@ def main() -> None:
     debug(f"           trigger_map={args.trigger_map}")
     debug(f"           log_path={args.log_path}")
 
-    trigger_map = load_trigger_map(args.trigger_map)
+    trigger_map = load_trigger_map(TRIGGER_MAP)
     output = TriggerOutput(args.mode, parse_parallel_port_address(args.parallel_port_address))
 
     debug(f"Final output mode: {output.mode}")
@@ -345,3 +358,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+
