@@ -24,6 +24,9 @@ function createTriggerClient({ logger = console } = {}) {
     ''
   );
 
+  logger.info(`[EEG] Trigger client initialised — mode=${mode}, bridgeUrl=${bridgeUrl}`);
+  logger.info(`[EEG] Loaded ${Object.keys(triggerMap).length} trigger events: ${Object.keys(triggerMap).join(', ')}`);
+
   function isKnownEventName(eventName) {
     return Object.prototype.hasOwnProperty.call(triggerMap, eventName);
   }
@@ -62,6 +65,7 @@ function createTriggerClient({ logger = console } = {}) {
       logger.info(
         `[EEG] noop trigger ${payload.eventName} (${payload.code}) for ${payload.participantId}/${payload.experimentId}`
       );
+      logger.info(`[EEG]   -> Skipped (mode=${mode}). Set EEG_TRIGGER_MODE=bridge to send to PsychoPy bridge.`);
       return {
         ok: true,
         skipped: true,
@@ -71,6 +75,8 @@ function createTriggerClient({ logger = console } = {}) {
     }
 
     try {
+      logger.info(`[EEG] >> Sending POST ${bridgeUrl}/trigger`);
+      logger.info(`[EEG]    Payload: ${JSON.stringify(payload)}`);
       const response = await fetch(`${bridgeUrl}/trigger`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -80,8 +86,12 @@ function createTriggerClient({ logger = console } = {}) {
 
       if (!response.ok) {
         const responseText = await response.text();
+        logger.warn(`[EEG] << Bridge responded with HTTP ${response.status}: ${responseText}`);
         throw new Error(`bridge responded with ${response.status}: ${responseText}`);
       }
+
+      const responseBody = await response.text();
+      logger.info(`[EEG] << Bridge responded OK (${response.status}): ${responseBody}`);
 
       return {
         ok: true,
@@ -90,8 +100,11 @@ function createTriggerClient({ logger = console } = {}) {
       };
     } catch (error) {
       logger.warn(
-        `[EEG] Failed to send trigger ${payload.eventName} (${payload.code}): ${error.message}`
+        `[EEG] !! Failed to send trigger ${payload.eventName} (${payload.code}): ${error.message}`
       );
+      if (error.cause) {
+        logger.warn(`[EEG]    Cause: ${error.cause}`);
+      }
       return {
         ok: false,
         mode,

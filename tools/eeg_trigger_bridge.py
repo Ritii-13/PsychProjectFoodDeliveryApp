@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import sys
 import time
 from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -30,15 +31,24 @@ def now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
+def debug(msg: str) -> None:
+    """Print a timestamped debug message and flush immediately."""
+    ts = datetime.now().strftime("%H:%M:%S.%f")[:-3]
+    print(f"[DEBUG {ts}] {msg}", flush=True)
+
+
 def normalize_csv_value(value) -> str:
     return str(value or "").replace(",", ";").replace("\r", " ").replace("\n", " ")
 
 
 def load_trigger_map(trigger_map_path: Path) -> dict[str, int]:
+    debug(f"Loading trigger map from: {trigger_map_path}")
     with trigger_map_path.open("r", encoding="utf-8") as file:
         data = json.load(file)
 
-    return {str(name): int(code) for name, code in data.items()}
+    trigger_map = {str(name): int(code) for name, code in data.items()}
+    debug(f"Loaded {len(trigger_map)} triggers: {list(trigger_map.keys())}")
+    return trigger_map
 
 
 def parse_parallel_port_address(value: str) -> int:
@@ -76,25 +86,39 @@ class TriggerOutput:
         self.port = None
         self.init_error = None
 
+        debug(f"Initialising TriggerOutput: requested_mode={mode}, port_address={hex(parallel_port_address)}")
+
         if mode == "dry-run":
+            debug("Running in DRY-RUN mode — no parallel port output")
             return
 
         try:
+            debug("Attempting to import psychopy.parallel ...")
             from psychopy import parallel
 
+            debug(f"PsychoPy imported OK — opening parallel port at {hex(parallel_port_address)}")
             self.port = parallel.ParallelPort(address=parallel_port_address)
             self.mode = "parallel"
+            debug("Parallel port opened successfully")
         except Exception as error:  # pragma: no cover - hardware/psychopy dependent
             self.init_error = str(error)
+            debug(f"!! Parallel port init FAILED: {error}")
             if mode == "parallel":
                 raise
+            debug("Falling back to dry-run mode")
             self.mode = "dry-run"
 
     def send(self, code: int) -> dict[str, str | int]:
+        debug(f"TriggerOutput.send() called — code={code}, mode={self.mode}")
         if self.mode == "parallel":  # pragma: no cover - hardware dependent
+            debug(f"  -> Writing {code} to parallel port ...")
             self.port.setData(code)
             time.sleep(0.01)
+            debug(f"  -> Resetting parallel port to 0")
             self.port.setData(0)
+            debug(f"  -> Parallel port write complete")
+        else:
+            debug(f"  -> DRY-RUN: would have sent code {code} to parallel port")
 
         return {
             "mode": self.mode,
@@ -123,7 +147,8 @@ class TriggerBridgeHandler(BaseHTTPRequestHandler):
     server: TriggerBridgeServer
 
     def log_message(self, format, *args):  # noqa: A003
-        return
+        # Re-enable HTTP request logging for debugging
+        debug(f"HTTP {self.command} {self.path} — {format % args}")
 
     def _write_json(self, status_code: int, payload: dict) -> None:
         body = json.dumps(payload).encode("utf-8")
@@ -139,10 +164,13 @@ class TriggerBridgeHandler(BaseHTTPRequestHandler):
         return json.loads(raw_body.decode("utf-8") or "{}")
 
     def do_GET(self) -> None:  # noqa: N802
+        debug(f"<-- GET {self.path} from {self.client_address}")
         if self.path != "/health":
+            debug(f"  -> 404 Not Found")
             self._write_json(404, {"ok": False, "error": "not found"})
             return
 
+        debug(f"  -> Health check OK (mode={self.server.output.mode})")
         self._write_json(
             200,
             {
@@ -156,7 +184,9 @@ class TriggerBridgeHandler(BaseHTTPRequestHandler):
         )
 
     def do_POST(self) -> None:  # noqa: N802
+        debug(f"<-- POST {self.path} from {self.client_address}")
         if self.path != "/trigger":
+            debug(f"  -> 404 Not Found (path={self.path})")
             self._write_json(404, {"ok": False, "error": "not found"})
             return
 
@@ -166,17 +196,24 @@ class TriggerBridgeHandler(BaseHTTPRequestHandler):
 
         try:
             payload = self._read_json()
+            debug(f"  -> Received payload: {json.dumps(payload, default=str)}")
             event_name = str(payload.get("eventName", "")).strip()
             if not event_name:
+                debug("  -> ERROR: eventName is empty or missing")
                 self._write_json(400, {"ok": False, "error": "eventName is required"})
                 return
 
             if event_name not in self.server.trigger_map:
+                debug(f"  -> ERROR: eventName '{event_name}' NOT in trigger map")
+                debug(f"     Known events: {list(self.server.trigger_map.keys())}")
                 self._write_json(400, {"ok": False, "error": "eventName is not in the trigger map"})
                 return
 
             code = self.server.trigger_map[event_name]
+            debug(f"  -> Mapped '{event_name}' -> code {code}")
+            debug(f"  -> Sending trigger code {code} via TriggerOutput ...")
             result = self.server.output.send(code)
+            debug(f"  -> Trigger sent OK (mode={result['mode']})")
             append_log(
                 self.server.log_path,
                 {
@@ -193,6 +230,7 @@ class TriggerBridgeHandler(BaseHTTPRequestHandler):
                     "error": "",
                 },
             )
+            debug(f"  -> Logged to CSV. Responding 202 Accepted.")
 
             self._write_json(
                 202,
@@ -206,7 +244,11 @@ class TriggerBridgeHandler(BaseHTTPRequestHandler):
                     "parallelPortAddress": result["parallelPortAddress"],
                 },
             )
+            debug(f"  -> Response sent to client")
         except Exception as error:  # pragma: no cover - exercised only on unexpected failure
+            debug(f"  -> !! EXCEPTION in do_POST: {type(error).__name__}: {error}")
+            import traceback
+            debug(f"  -> Traceback:\n{traceback.format_exc()}")
             append_log(
                 self.server.log_path,
                 {
@@ -258,8 +300,22 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
+    print("="*60, flush=True)
+    print("  EEG TRIGGER BRIDGE — DEBUG MODE", flush=True)
+    print("="*60, flush=True)
+    debug(f"Python version: {sys.version}")
+    debug(f"Arguments: host={args.host}, port={args.port}, mode={args.mode}")
+    debug(f"           parallel_port_address={args.parallel_port_address}")
+    debug(f"           trigger_map={args.trigger_map}")
+    debug(f"           log_path={args.log_path}")
+
     trigger_map = load_trigger_map(args.trigger_map)
     output = TriggerOutput(args.mode, parse_parallel_port_address(args.parallel_port_address))
+
+    debug(f"Final output mode: {output.mode}")
+    if output.init_error:
+        debug(f"!! Init error (non-fatal): {output.init_error}")
+
     server = TriggerBridgeServer(
         (args.host, args.port),
         trigger_map=trigger_map,
@@ -268,11 +324,23 @@ def main() -> None:
         trigger_map_path=args.trigger_map,
     )
 
+    print("\n" + "="*60, flush=True)
     print(
-        f"EEG trigger bridge listening on http://{args.host}:{args.port} "
-        f"(mode={output.mode}, parallel_port={hex(output.parallel_port_address)})"
+        f"  LISTENING on http://{args.host}:{args.port}\n"
+        f"  Mode: {output.mode}\n"
+        f"  Parallel port: {hex(output.parallel_port_address)}\n"
+        f"  Waiting for triggers from the Node.js server ...",
+        flush=True
     )
-    server.serve_forever()
+    print("="*60 + "\n", flush=True)
+    debug("Server is ready. Any incoming requests will be logged below.")
+
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        debug("Received KeyboardInterrupt — shutting down.")
+        server.shutdown()
+        debug("Server shut down cleanly.")
 
 
 if __name__ == "__main__":
