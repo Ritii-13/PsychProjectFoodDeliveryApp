@@ -36,7 +36,11 @@ TRIGGER_MAP = {
   "delivery_onset": 5,
   "order_delivered": 6,
   "rating_onset": 7,
-  "rating_submitted": 8
+  "rating_submitted": 8,
+  "trial_start": 9,
+  "fixation_start": 10,
+  "stimulus_onset": 11,
+  "response_made": 12
 }
 
 

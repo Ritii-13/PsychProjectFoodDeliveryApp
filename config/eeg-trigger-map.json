@@ -1,14 +1,14 @@
 {
-  "transition_onset": 11,
-  "restaurants_onset": 12,
-  "menu_onset": 13,
-  "order_created": 14,
-  "delivery_onset": 15,
-  "order_delivered": 16,
-  "rating_onset": 17,
-  "rating_submitted": 18,
-  "trial_start": 19,
-  "fixation_start": 20,
-  "stimulus_onset": 21,
-  "response_made": 22
+  "transition_onset": 1,
+  "restaurants_onset": 2,
+  "menu_onset": 3,
+  "order_created": 4,
+  "delivery_onset": 5,
+  "order_delivered": 6,
+  "rating_onset": 7,
+  "rating_submitted": 8,
+  "trial_start": 9,
+  "fixation_start": 10,
+  "stimulus_onset": 11,
+  "response_made": 12
 }
