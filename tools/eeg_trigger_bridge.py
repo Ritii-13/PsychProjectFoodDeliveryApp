@@ -54,11 +54,7 @@ def normalize_csv_value(value) -> str:
     return str(value or "").replace(",", ";").replace("\r", " ").replace("\n", " ")
 
 
-def load_trigger_map(TRIGGER_MAP):
 
-    trigger_map = TRIGGER_MAP
-    debug(f"Loaded triggers")
-    return trigger_map
 
 
 def parse_parallel_port_address(value: str) -> int:
@@ -322,7 +318,8 @@ def main() -> None:
     debug(f"           trigger_map={args.trigger_map}")
     debug(f"           log_path={args.log_path}")
 
-    trigger_map = load_trigger_map(TRIGGER_MAP)
+    trigger_map = TRIGGER_MAP
+    debug(f"trigger_map is a {type(trigger_map).__name__}: {trigger_map}")
     output = TriggerOutput(args.mode, parse_parallel_port_address(args.parallel_port_address))
 
     debug(f"Final output mode: {output.mode}")
